@@ -4,25 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>World Clock</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<header>
+<div class="header">
   <h1>World Clock</h1>
-  <div id="live-dot"><span></span> Live</div>
-</header>
-
-<div class="main">
-  <div class="add-section">
-    <p class="add-label">Add a city</p>
-    <div class="city-pills" id="pills"></div>
-  </div>
-  <div class="clocks" id="clocks"></div>
+  <span class="live">● live</span>
 </div>
 
-<footer>Built with HTML · CSS · JavaScript</footer>
+<div class="wrap">
+  <p class="label">Add a city</p>
+  <div id="pills"></div>
+  <div id="clocks"></div>
+</div>
 
 <script src="script.js"></script>
 </body>

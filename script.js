@@ -18,29 +18,29 @@ const CITIES = [
 let active = ["Athens", "London", "New York"];
 
 function getTime(tz) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Date().toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     timeZone: tz,
-  }).format(new Date());
+  });
 }
 
 function getDate(tz) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Date().toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
     timeZone: tz,
-  }).format(new Date());
+  });
 }
 
 function getOffset(tz) {
   const now = new Date();
-  const local = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Athens" }));
-  const target = new Date(now.toLocaleString("en-US", { timeZone: tz }));
-  const diff = Math.round((target - local) / 3600000);
-  if (diff === 0) return "Your time";
+  const home = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Athens" }));
+  const there = new Date(now.toLocaleString("en-US", { timeZone: tz }));
+  const diff = Math.round((there - home) / 3600000);
+  if (diff === 0) return "your time";
   return diff > 0 ? `+${diff}h from Athens` : `${diff}h from Athens`;
 }
 
@@ -49,35 +49,35 @@ function render() {
   const pills = document.getElementById("pills");
 
   if (active.length === 0) {
-    clocks.innerHTML = `<div class="empty">No cities added yet — pick one above</div>`;
+    clocks.innerHTML = `<div class="empty">add a city above</div>`;
   } else {
     clocks.innerHTML = active.map(name => {
       const city = CITIES.find(c => c.name === name);
-      const id = "t_" + name.replace(/[^a-zA-Z]/g, "_");
-      return `<div class="clock-card ${city.home ? "home" : ""}">
-        ${city.home ? "" : `<button class="remove" onclick="remove('${name}')">✕</button>`}
-        <p class="card-city">${name}</p>
-        <p class="card-time" id="${id}">${getTime(city.tz)}</p>
-        <p class="card-date">${getDate(city.tz)}</p>
-        <p class="card-offset">${getOffset(city.tz)}</p>
+      const id = "t_" + name.replace(/\s/g, "_");
+      return `<div class="card ${city.home ? "home" : ""}">
+        ${!city.home ? `<button class="remove-btn" onclick="removeCity('${name}')">✕</button>` : ""}
+        <p class="city-name">${name}</p>
+        <p class="time" id="${id}">${getTime(city.tz)}</p>
+        <p class="date">${getDate(city.tz)}</p>
+        <p class="offset">${getOffset(city.tz)}</p>
       </div>`;
     }).join("");
   }
 
   pills.innerHTML = CITIES.map(c => {
-    const on = active.includes(c.name);
-    return `<button class="pill" ${on ? "disabled" : ""} onclick="add('${c.name}')">${c.name}</button>`;
+    const added = active.includes(c.name);
+    return `<button ${added ? "disabled" : ""} onclick="addCity('${c.name}')">${c.name}</button>`;
   }).join("");
 }
 
-function add(name) {
+function addCity(name) {
   if (!active.includes(name)) {
     active.push(name);
     render();
   }
 }
 
-function remove(name) {
+function removeCity(name) {
   active = active.filter(n => n !== name);
   render();
 }
@@ -85,7 +85,7 @@ function remove(name) {
 function tick() {
   active.forEach(name => {
     const city = CITIES.find(c => c.name === name);
-    const el = document.getElementById("t_" + name.replace(/[^a-zA-Z]/g, "_"));
+    const el = document.getElementById("t_" + name.replace(/\s/g, "_"));
     if (el) el.textContent = getTime(city.tz);
   });
 }
